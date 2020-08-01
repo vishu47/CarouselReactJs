@@ -14,7 +14,6 @@ import './App.css';
 import Viewer from "./components/Viewer";
 import Thumbs from "./components/Thumbs";
 
-
 const catalogs = [
   {
     thumb: thumb1,
@@ -41,9 +40,9 @@ class App extends Component {
     this.state = {
       title: 'Catalog Viewer',
       catalogs: [...catalogs],
-      currentIndex: -1,
-      catalogSelected: catalogs[3],
-      slideActive: false,
+      currentIndex: 0,
+      catalogSelected: catalogs[0],
+      slideActive: true,
       slideTimer: null,
       slideDuration: 3000,
     };
@@ -56,27 +55,92 @@ class App extends Component {
   }
 
   selectedCatalog(index) {
-
+    let {catalogs} = this.state;
+    let currentIndex = index;
+    const catalogIdx = catalogs[currentIndex ]
+    this.setState({
+      currentIndex : currentIndex,
+      catalogSelected: catalogIdx,
+    })
+    // console.log(currentIndex)
   }
 
-  previousClick() {
+  previousClick(e) {
+    e.preventDefault()
+    let {currentIndex,catalogs,catalogSelected} = this.state;
+    // let { items } = this.props;
+    let itemslength = catalogs.length;
+    if ( currentIndex < 1 ){
+      currentIndex = itemslength
+    }
+    --currentIndex;
+    
+  const catalogIdx = catalogs[currentIndex ]
 
-  }
+    this.setState({
+      currentIndex : currentIndex,
+      catalogSelected: catalogIdx,
+    });
+    // console.log(catalogIdx)
+  };
 
-  nextClick() {
+  // slide === catalog, index===idx
 
-  }
+  nextClick(e) {
+    e.preventDefault()
+    let {currentIndex,catalogs,catalogSelected} = this.state;
+    let itemslength = catalogs.length  - 1;
+    if ( currentIndex === itemslength ){
+      currentIndex = -1
+    }
+    ++currentIndex;
 
-  slideChange(event) {
+    const catalogIdx = catalogs[currentIndex]
 
-  }
+    this.setState({
+      currentIndex : currentIndex,
+      catalogSelected: catalogIdx,
+
+    })
+    
+  };
+
+  slideChange(e) {
+    // e.preventDefault()
+    let {currentIndex,slideActive,catalogs,catalogSelected} = this.state;
+    this.setState({
+      slideActive : !this.state.slideActive,
+    })
+    if(slideActive === true){
+      this.myTimer = setInterval(()=>{
+        let itemslength = catalogs.length  - 1;
+        if ( currentIndex === itemslength ){
+          currentIndex = -1
+        }
+        ++currentIndex;
+    
+        const catalogIdx = catalogs[currentIndex]
+    
+        this.setState({
+          currentIndex : currentIndex,
+          catalogSelected: catalogIdx,    
+        }) 
+        console.log("clicked")
+      }, 1000);
+      
+    }
+    else{
+      clearInterval(this.myTimer);
+      console.log(slideActive)
+    }
+    
+  };
 
   resetSlideTimer(isActive = false) {
 
   }
 
   onSlideChange() {
-
   }
 
   render() {
